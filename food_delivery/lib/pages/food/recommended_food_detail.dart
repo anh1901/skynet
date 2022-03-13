@@ -1,26 +1,40 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:food_delivery/controllers/recommended_product_controller.dart';
+import 'package:food_delivery/routes/routes_helper.dart';
+import 'package:food_delivery/utils/app_constants.dart';
 import 'package:food_delivery/utils/colors.dart';
 import 'package:food_delivery/utils/dimension.dart';
 import 'package:food_delivery/widgets/app_icon.dart';
 import 'package:food_delivery/widgets/big_text.dart';
 import 'package:food_delivery/widgets/expandable_text.dart';
+import 'package:get/get.dart';
 
 class RecommendedFoodDetail extends StatelessWidget {
-  const RecommendedFoodDetail({Key? key}) : super(key: key);
+  final int pageId;
+  const RecommendedFoodDetail({Key? key, required this.pageId})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    var product =
+        Get.find<RecommendedProductController>().recommendedProductList[pageId];
     return Scaffold(
       backgroundColor: Colors.white,
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
+            automaticallyImplyLeading: false,
             toolbarHeight: 70,
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                AppIcon(icon: Icons.clear),
+                GestureDetector(
+                  child: AppIcon(icon: Icons.clear),
+                  onTap: () {
+                    Get.toNamed(RoutesHelper.getInitial());
+                  },
+                ),
                 AppIcon(icon: Icons.shopping_cart_outlined),
               ],
             ),
@@ -37,7 +51,7 @@ class RecommendedFoodDetail extends StatelessWidget {
                 ),
                 child: Center(
                     child: BigText(
-                  text: "Spaghetti Dish",
+                  text: product.name!,
                   size: Dimension.font26,
                 )),
                 width: double.maxFinite,
@@ -47,8 +61,8 @@ class RecommendedFoodDetail extends StatelessWidget {
             backgroundColor: AppColors.yellowColor,
             expandedHeight: 300,
             flexibleSpace: FlexibleSpaceBar(
-              background: Image.asset(
-                "assets/image/food0.png",
+              background: Image.network(
+                AppConstants.BASE_URL + AppConstants.UPLOAD_URL + product.img,
                 width: double.maxFinite,
                 fit: BoxFit.cover,
               ),
@@ -58,9 +72,7 @@ class RecommendedFoodDetail extends StatelessWidget {
             child: Column(
               children: [
                 Container(
-                  child: ExpandableText(
-                      text:
-                          "A humble packet of spaghetti can be transformed into something truly special. This long skinny pasta works when coated in emulsified carbonara sauce, tossed in a spicy tomato puttanesca, quickly mixed in a herby garlic oil – the options are too long to list. Spaghetti can also be elevated into something luxurious when served with shellfish, like prawns, clams or crab.A humble packet of spaghetti can be transformed into something truly special. This long skinny pasta works when coated in emulsified carbonara sauce, tossed in a spicy tomato puttanesca, quickly mixed in a herby garlic oil – the options are too long to list. Spaghetti can also be elevated into something luxurious when served with shellfish, like prawns, clams or crab.A humble packet of spaghetti can be transformed into something truly special. This long skinny pasta works when coated in emulsified carbonara sauce, tossed in a spicy tomato puttanesca, quickly mixed in a herby garlic oil – the options are too long to list. Spaghetti can also be elevated into something luxurious when served with shellfish, like prawns, clams or crab.A humble packet of spaghetti can be transformed into something truly special. This long skinny pasta works when coated in emulsified carbonara sauce, tossed in a spicy tomato puttanesca, quickly mixed in a herby garlic oil – the options are too long to list. Spaghetti can also be elevated into something luxurious when served with shellfish, like prawns, clams or crab.A humble packet of spaghetti can be transformed into something truly special. This long skinny pasta works when coated in emulsified carbonara sauce, tossed in a spicy tomato puttanesca, quickly mixed in a herby garlic oil – the options are too long to list. Spaghetti can also be elevated into something luxurious when served with shellfish, like prawns, clams or crab.A humble packet of spaghetti can be transformed into something truly special. This long skinny pasta works when coated in emulsified carbonara sauce, tossed in a spicy tomato puttanesca, quickly mixed in a herby garlic oil – the options are too long to list. Spaghetti can also be elevated into something luxurious when served with shellfish, like prawns, clams or crab.A humble packet of spaghetti can be transformed into something truly special. This long skinny pasta works when coated in emulsified carbonara sauce, tossed in a spicy tomato puttanesca, quickly mixed in a herby garlic oil – the options are too long to list. Spaghetti can also be elevated into something luxurious when served with shellfish, like prawns, clams or crab."),
+                  child: ExpandableText(text: product.description!),
                   margin: EdgeInsets.only(
                       left: Dimension.width20, right: Dimension.width20),
                 ),
@@ -88,7 +100,7 @@ class RecommendedFoodDetail extends StatelessWidget {
                   iconColor: Colors.white,
                 ),
                 BigText(
-                  text: "\$4.99" + " X " + "0",
+                  text: "\$ ${product.price!} X 0",
                   color: AppColors.mainBlackColor,
                   size: Dimension.font26,
                 ),
@@ -141,7 +153,7 @@ class RecommendedFoodDetail extends StatelessWidget {
                       color: AppColors.mainColor,
                       borderRadius: BorderRadius.circular(Dimension.radius20)),
                   child: BigText(
-                    text: "\$10 | Add to cart",
+                    text: "\$ ${product.price!} | Add to cart",
                     color: Colors.white,
                   ),
                 ),

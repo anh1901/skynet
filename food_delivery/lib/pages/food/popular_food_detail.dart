@@ -1,17 +1,24 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:food_delivery/controllers/popular_product_controller.dart';
+import 'package:food_delivery/pages/home/main_page.dart';
+import 'package:food_delivery/utils/app_constants.dart';
 import 'package:food_delivery/utils/colors.dart';
 import 'package:food_delivery/utils/dimension.dart';
 import 'package:food_delivery/widgets/app_column.dart';
 import 'package:food_delivery/widgets/app_icon.dart';
 import 'package:food_delivery/widgets/big_text.dart';
 import 'package:food_delivery/widgets/expandable_text.dart';
+import 'package:get/get.dart';
 
 class PopularFoodDetail extends StatelessWidget {
-  const PopularFoodDetail({Key? key}) : super(key: key);
+  final int pageId;
+  const PopularFoodDetail({Key? key, required this.pageId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    var product =
+        Get.find<PopularProductController>().popularProductList[pageId];
     return Scaffold(
       backgroundColor: Colors.white,
       body: Stack(
@@ -26,7 +33,9 @@ class PopularFoodDetail extends StatelessWidget {
               decoration: BoxDecoration(
                 image: DecorationImage(
                   fit: BoxFit.cover,
-                  image: AssetImage("assets/image/food0.png"),
+                  image: NetworkImage(AppConstants.BASE_URL +
+                      AppConstants.UPLOAD_URL +
+                      product.img),
                 ),
               ),
             ),
@@ -39,7 +48,12 @@ class PopularFoodDetail extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  AppIcon(icon: Icons.arrow_back_ios),
+                  GestureDetector(
+                    child: AppIcon(icon: Icons.arrow_back_ios),
+                    onTap: () {
+                      Get.to(() => MainPage());
+                    },
+                  ),
                   AppIcon(icon: Icons.shopping_cart_outlined),
                 ],
               )),
@@ -64,7 +78,7 @@ class PopularFoodDetail extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   AppColumn(
-                    text: "Spaghetti Dish",
+                    text: product.name!,
                   ),
                   SizedBox(
                     height: Dimension.height20,
@@ -76,9 +90,7 @@ class PopularFoodDetail extends StatelessWidget {
                   ),
                   Expanded(
                     child: SingleChildScrollView(
-                      child: ExpandableText(
-                          text:
-                              "A humble packet of spaghetti can be transformed into something truly special. This long skinny pasta works when coated in emulsified carbonara sauce, tossed in a spicy tomato puttanesca, quickly mixed in a herby garlic oil – the options are too long to list. Spaghetti can also be elevated into something luxurious when served with shellfish, like prawns, clams or crab."),
+                      child: ExpandableText(text: product.description!),
                     ),
                   ),
                   //rating & comments
@@ -147,7 +159,7 @@ class PopularFoodDetail extends StatelessWidget {
                   color: AppColors.mainColor,
                   borderRadius: BorderRadius.circular(Dimension.radius20)),
               child: BigText(
-                text: "\$10 | Add to cart",
+                text: "\$ ${product.price} | Add to cart",
                 color: Colors.white,
               ),
             ),
